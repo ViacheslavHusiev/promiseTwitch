@@ -39,14 +39,14 @@ class App extends React.Component {
     });
   }
   handleClickOpenVideo() {
-    this.setState(state => ({
+    this.setState({
       isSubmitted: true
-    }))
+    })
   }
   handleClickCloseVideo() {
-    this.setState(state => ({
+    this.setState({
       isSubmitted: false
-    }))
+    })
   }
 
 render () {
