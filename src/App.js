@@ -26,7 +26,7 @@ class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      title: '',
+      url: '',
       isSubmitted: false
     }
     this.handleChange = this.handleChange.bind(this)
@@ -35,7 +35,7 @@ class App extends React.Component {
   }
   handleChange(event) {
     this.setState({
-      title: event.target.value
+      url: event.target.value
     });
   }
   handleClickOpenVideo() {
@@ -45,33 +45,54 @@ class App extends React.Component {
   }
   handleClickCloseVideo() {
     this.setState({
-      isSubmitted: false
+      isSubmitted: false,
+      url: ''
     })
   }
-
-render () {
-  const { classes } = this.props
-  const twitchProm = new Promise((resolve, reject) =>{
-    if (this.state.title.includes('https://www.twitch.tv/')) {
-      resolve()
-    } else {
-      reject ()
-    }
-  })
-  const prom = () => {
-    twitchProm.then(() => {
-      return (
-      <iframe
-        src={this.state.title}
-        frameBorder="0"
-        scrolling="no"
-        height="378"
-        width="620"
-      />
-    )
-    }).catch(() => {
-      return (<h1>404 ERROR</h1>)
+  render () {
+    const { classes } = this.props
+    const twitchProm = new Promise((resolve, reject) => {
+      if (this.state.url.includes('https://www.twitch.tv/')) {
+        const newURL = `${this.state.url.replace(
+          'https://www',
+          'https://player'
+        ).replace(
+          'twitch.tv/',
+          'twitch.tv/?channel='
+        )}&parent=localhost`
+        console.log(newURL)
+        return resolve(
+          <iframe
+            src={newURL}
+            frameBorder="0"
+            scrolling="no"
+            height="378"
+            width="620"
+          />,
+        )
+      } else {
+        return reject(
+          <h1>404 ERROR</h1>,
+        )
+      }
     })
+    // "https://player.twitch.tv/?channel=welovegames&parent=localhost"
+    const prom = () => {
+      twitchProm.then((massage) => {
+        return massage
+      }).catch((massage) => {
+        return massage
+      })
+    }
+
+  const click = () => {
+    if (this.state.isSubmitted) {
+      return (
+        {prom}
+      )
+    } else {
+    return null
+    }
   }
 
     return (
@@ -81,7 +102,7 @@ render () {
         id="standard-basic"
         type="text"
         variant="outlined"
-        value={this.state.title}
+        value={this.state.url}
         onChange={this.handleChange}
       />
     </form>
@@ -97,14 +118,7 @@ render () {
         <CloseIcon />
       </IconButton>
     </div>
-    {this.state.isSubmitted
-      ?
-      <div>
-        {prom}
-      </div>
-      :
-      <div/>
-    }
+    {click}
   </div>
 )}
 
