@@ -53,26 +53,24 @@ render () {
   const { classes } = this.props
   const twitchProm = new Promise((resolve, reject) =>{
     if (this.state.title.includes('https://www.twitch.tv/')) {
-      resolve(
-        <iframe
-          src={this.state.title}
-          frameBorder="0"
-          scrolling="no"
-          height="378"
-          width="620"
-        />
-      )
+      resolve()
     } else {
-      reject (
-        <h1>404 ERROR</h1>
-      )
+      reject ()
     }
   })
   const prom = () => {
-    twitchProm.then((massage) => {
-      return massage
-    }).catch((massage) => {
-      return massage
+    twitchProm.then(() => {
+      return (
+      <iframe
+        src={this.state.title}
+        frameBorder="0"
+        scrolling="no"
+        height="378"
+        width="620"
+      />
+    )
+    }).catch(() => {
+      return (<h1>404 ERROR</h1>)
     })
   }
 
