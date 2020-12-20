@@ -32,6 +32,7 @@ class App extends React.Component {
     this.handleChange = this.handleChange.bind(this)
     this.handleClickOpenVideo = this.handleClickOpenVideo.bind(this)
     this.handleClickCloseVideo = this.handleClickCloseVideo.bind(this)
+    this.twitchPlayer = this.twitchPlayer.bind(this)
   }
   handleChange(event) {
     this.setState({
@@ -49,51 +50,19 @@ class App extends React.Component {
       url: ''
     })
   }
+  twitchPlayer(){
+    const newURL = `https://player.twitch.tv/?channel=${this.state.url}&parent=localhost`
+    return fetch(newURL)
+    .then((response) => response.json())
+    .then((responseJson) => {
+      console.log(responseJson)
+    }).catch((error) => {
+      console.error(error)
+    })
+  }
+
   render () {
     const { classes } = this.props
-    const twitchProm = new Promise((resolve, reject) => {
-      if (this.state.url.includes('https://www.twitch.tv/')) {
-        const newURL = `${this.state.url.replace(
-          'https://www',
-          'https://player'
-        ).replace(
-          'twitch.tv/',
-          'twitch.tv/?channel='
-        )}&parent=localhost`
-        console.log(newURL)
-        return resolve(
-          <iframe
-            src={newURL}
-            frameBorder="0"
-            scrolling="no"
-            height="378"
-            width="620"
-          />,
-        )
-      } else {
-        return reject(
-          <h1>404 ERROR</h1>,
-        )
-      }
-    })
-    // "https://player.twitch.tv/?channel=welovegames&parent=localhost"
-    const prom = () => {
-      twitchProm.then((massage) => {
-        return massage
-      }).catch((massage) => {
-        return massage
-      })
-    }
-
-  const click = () => {
-    if (this.state.isSubmitted) {
-      return (
-        {prom}
-      )
-    } else {
-    return null
-    }
-  }
 
     return (
   <div className={classes.App}>
@@ -118,11 +87,9 @@ class App extends React.Component {
         <CloseIcon />
       </IconButton>
     </div>
-    {click}
+    {this.state.isSubmitted && this.twitchPlayer()}
   </div>
 )}
-
-
 }
 
 export default withStyles(styles)(App)
